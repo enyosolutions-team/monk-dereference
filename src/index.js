@@ -8,14 +8,12 @@ module.exports = function dereference
       if (!(args.options || {}).refMapping) {
         return res
       }
-      if (!args.options.dereference) {
-        return res
-      }
+
 
       const isArrayResult = Array.isArray(res)
 
-      const queries = Object.keys(args.options.dereference).reduce((prev, ref) => {
-        if (!args.options.dereference[ref]) {
+      const queries = Object.keys(args.options.refMapping).reduce((prev, ref) => {
+        if (!args.options.refMapping[ref]) {
           return prev
         }
         var collectionTarget = args.options.refMapping[ref].collection || args.options.refMapping[ref]
@@ -37,7 +35,8 @@ module.exports = function dereference
             ref,
             collectionTarget,
             query: ids.length > 1 ? { $in: ids } : ids[0],
-            fields: args.options.dereference[ref] === true ? undefined : args.options.dereference[ref]
+            fields: !args.options.refMapping[ref].fields || args.options.refMapping[ref].fields === true 
+            ? undefined : args.options.dereference[ref].fields
           })
         }
         return prev
@@ -59,8 +58,8 @@ module.exports = function dereference
               }
               const value = deref.find((d) => monkInstance.id(d._id).toHexString() === monkInstance.id(o[ref]).toHexString()) || o[ref]
 
-              if (args.options.refMapping[ref].field) {
-                o[args.options.refMapping[ref].field] = value
+              if (args.options.refMapping[ref].as) {
+                o[args.options.refMapping[ref].as] = value
               } else {
                 o[ref] = value
               }
@@ -74,8 +73,8 @@ module.exports = function dereference
             }
             const value = deref.find((d) => monkInstance.id(d._id).toHexString() === monkInstance.id(res[ref]).toHexString()) || res[ref]
 
-            if (args.options.refMapping[ref].field) {
-              res[args.options.refMapping[ref].field] = value
+            if (args.options.refMapping[ref].as) {
+              res[args.options.refMapping[ref].as] = value
             } else {
               res[ref] = value
             }
