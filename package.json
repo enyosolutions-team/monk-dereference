@@ -1,6 +1,6 @@
 {
   "name": "monk-middleware-dereference",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "A monk middleware to handle dereferencing",
   "keywords": [],
   "main": "build/index.js",
